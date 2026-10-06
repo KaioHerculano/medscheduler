@@ -1,6 +1,6 @@
 # MedScheduler - Plano de Implementacao Tecnica
 
-Sistema backend para gerenciamento automatizado de rotina pos-operatoria de medicamentos, focado em analgesia escalonada rotativa (rotacao de farmacos sem colisao) e integracao bidirecional com Telegram (Mobile UI com Inline Buttons) e Discord (Log / Monitoramento).
+Sistema backend para gerenciamento automatizado de rotina pos-operatoria de medicamentos, focado em analgesia escalonada rotativa (rotacao de farmacos sem colisao) e integracao bidirecional com Telegram (Mobile UI com Inline Buttons).
 
 ---
 
@@ -11,7 +11,6 @@ O sistema opera orientado a eventos e tarefas temporizadas:
 - PostgreSQL + SQLAlchemy 2.0 (Async) + Alembic: Persistencia relacional de medicamentos, cronogramas e historico de doses.
 - Redis + APScheduler: Fila de agendamento de disparos de lembretes e timers de rescalonamento.
 - Telegram Bot API: Interface do usuario movel com botoes clicaveis (InlineKeyboardMarkup / CallbackQuery).
-- Discord Webhook: Canal de auditoria visual com embeds em tempo real.
 
 ---
 
@@ -74,11 +73,10 @@ Se houver atraso na confirmacao de uma dose alem de 30 minutos:
 - [x] Edicao da mensagem do bot removendo os botoes apos clique para evitar duplicidade.
 - [x] Testes unitarios e de integracao para o servico e webhook do Telegram.
 
-### Fase 3: Motor de Agendamento e Notificacao Discord
+### Fase 3: Motor de Rotação e Agendamento Automatico
 - [ ] Implementacao do motor de rotacao analgesica (SchedulerEngine).
 - [ ] Integracao do APScheduler ao ciclo de vida do FastAPI.
 - [ ] Job a cada minuto conferindo doses com scheduled_at <= now() e status == PENDING.
-- [ ] Servico assincrono de Webhooks do Discord (DiscordService) para logar embeds de status.
 - [ ] Testes unitarios para regras de recalculamento de doses atrasadas e agendamentos.
 
 ### Fase 4: Refinamento de UX, Resiliencia e Documentacao

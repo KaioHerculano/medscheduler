@@ -17,8 +17,6 @@ class Settings(BaseSettings):
     TELEGRAM_CHAT_ID: Optional[str] = None
     TELEGRAM_WEBHOOK_SECRET: Optional[str] = None
 
-    DISCORD_WEBHOOK_URL: Optional[str] = None
-
     TIMEZONE: str = 'America/Sao_Paulo'
 
     model_config = SettingsConfigDict(
