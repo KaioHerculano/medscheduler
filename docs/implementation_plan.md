@@ -65,14 +65,14 @@ Se houver atraso na confirmacao de uma dose alem de 30 minutos:
 - [x] Configuracao inicial de TDD (Pytest) e pipeline de CI/CD via GitHub Actions.
 
 ### Fase 2: Integracao com Telegram e Botoes
-- [ ] Criacao do servico assincrono do Telegram Bot API (TelegramService).
-- [ ] Implementacao do envio de mensagens com teclado inline (InlineKeyboardMarkup):
+- [x] Criacao do servico assincrono do Telegram Bot API (TelegramService).
+- [x] Implementacao do envio de mensagens com teclado inline (InlineKeyboardMarkup):
   - [ Tomei Agora ]
   - [ Adiar 15 min ]
   - [ Pular Dose ]
-- [ ] Endpoint de webhook (/webhooks/telegram) para processar o callback e dar feedback imediato.
-- [ ] Edicao da mensagem do bot removendo os botoes apos clique para evitar duplicidade.
-- [ ] Testes unitarios e de integracao para o servico e webhook do Telegram.
+- [x] Endpoint de webhook (/webhooks/telegram) para processar o callback e dar feedback imediato.
+- [x] Edicao da mensagem do bot removendo os botoes apos clique para evitar duplicidade.
+- [x] Testes unitarios e de integracao para o servico e webhook do Telegram.
 
 ### Fase 3: Motor de Agendamento e Notificacao Discord
 - [ ] Implementacao do motor de rotacao analgesica (SchedulerEngine).
