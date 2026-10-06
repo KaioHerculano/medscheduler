@@ -1,24 +1,24 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
 
-from app.api.v1.dependencies import get_dose_service
+from app.routers.dependencies import get_dose_service
 from app.schemas.dose import DoseCreate, DoseRead
 from app.services.dose_service import DoseService
 
 router = APIRouter()
 
 
-@router.get("/timeline", response_model=Dict[str, List[DoseRead]])
+@router.get('/timeline', response_model=Dict[str, List[DoseRead]])
 async def get_doses_timeline(
     service: DoseService = Depends(get_dose_service),
 ) -> Dict[str, List[DoseRead]]:
     return await service.get_timeline_grouped_by_status()
 
 
-@router.post("/", response_model=DoseRead, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=DoseRead, status_code=status.HTTP_201_CREATED)
 async def schedule_dose(
     payload: DoseCreate,
     service: DoseService = Depends(get_dose_service),
@@ -26,15 +26,17 @@ async def schedule_dose(
     return await service.schedule_dose(payload)
 
 
-@router.post("/{dose_id}/take", response_model=DoseRead)
+@router.post('/{dose_id}/take', response_model=DoseRead)
 async def mark_dose_taken(
     dose_id: UUID,
     service: DoseService = Depends(get_dose_service),
 ) -> DoseRead:
-    return await service.mark_dose_as_taken(dose_id, datetime.utcnow())
+    return await service.mark_dose_as_taken(
+        dose_id, datetime.now(timezone.utc)
+    )
 
 
-@router.post("/{dose_id}/snooze", response_model=DoseRead)
+@router.post('/{dose_id}/snooze', response_model=DoseRead)
 async def snooze_dose(
     dose_id: UUID,
     delay_minutes: int = 15,
@@ -43,7 +45,7 @@ async def snooze_dose(
     return await service.snooze_dose(dose_id, delay_minutes)
 
 
-@router.post("/{dose_id}/skip", response_model=DoseRead)
+@router.post('/{dose_id}/skip', response_model=DoseRead)
 async def skip_dose(
     dose_id: UUID,
     service: DoseService = Depends(get_dose_service),

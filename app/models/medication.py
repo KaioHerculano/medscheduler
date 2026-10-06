@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class Medication(Base):
-    __tablename__ = "medications"
+    __tablename__ = 'medications'
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -46,17 +46,17 @@ class Medication(Base):
     )
     rotation_group_id: Mapped[Optional[uuid.UUID]] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("rotation_groups.id", ondelete="SET NULL"),
+        ForeignKey('rotation_groups.id', ondelete='SET NULL'),
         nullable=True,
     )
 
-    rotation_group: Mapped[Optional["RotationGroup"]] = relationship(
-        "RotationGroup",
-        back_populates="medications",
-        lazy="selectin",
+    rotation_group: Mapped[Optional['RotationGroup']] = relationship(
+        'RotationGroup',
+        back_populates='medications',
+        lazy='selectin',
     )
-    doses: Mapped[List["Dose"]] = relationship(
-        "Dose",
-        back_populates="medication",
-        cascade="all, delete-orphan",
+    doses: Mapped[List['Dose']] = relationship(
+        'Dose',
+        back_populates='medication',
+        cascade='all, delete-orphan',
     )

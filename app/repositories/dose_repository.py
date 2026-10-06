@@ -16,7 +16,11 @@ class DoseRepository(BaseRepository[Dose]):
         super().__init__(Dose, session)
 
     async def get_by_id_with_medication(self, id: UUID) -> Optional[Dose]:
-        query = select(Dose).where(Dose.id == id).options(selectinload(Dose.medication))
+        query = (
+            select(Dose)
+            .where(Dose.id == id)
+            .options(selectinload(Dose.medication))
+        )
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
@@ -29,10 +33,15 @@ class DoseRepository(BaseRepository[Dose]):
         result = await self.session.execute(query)
         return result.scalars().all()
 
-    async def list_pending_doses_until(self, cutoff_time: datetime) -> Sequence[Dose]:
+    async def list_pending_doses_until(
+        self, cutoff_time: datetime
+    ) -> Sequence[Dose]:
         query = (
             select(Dose)
-            .where(Dose.scheduled_at <= cutoff_time, Dose.status == DoseStatus.PENDING)
+            .where(
+                Dose.scheduled_at <= cutoff_time,
+                Dose.status == DoseStatus.PENDING,
+            )
             .options(selectinload(Dose.medication))
         )
         result = await self.session.execute(query)

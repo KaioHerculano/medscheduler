@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class RotationGroup(Base):
-    __tablename__ = "rotation_groups"
+    __tablename__ = 'rotation_groups'
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -29,7 +29,7 @@ class RotationGroup(Base):
         nullable=False,
     )
 
-    medications: Mapped[List["Medication"]] = relationship(
-        "Medication",
-        back_populates="rotation_group",
+    medications: Mapped[List['Medication']] = relationship(
+        'Medication',
+        back_populates='rotation_group',
     )

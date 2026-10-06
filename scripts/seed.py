@@ -16,70 +16,70 @@ async def populate_initial_medications() -> None:
         service = MedicationService(medication_repo, rotation_group_repo)
 
         existing_group = await rotation_group_repo.get_by_name(
-            "Analgesia Rotativa Pos-Op"
+            'Analgesia Rotativa Pos-Op'
         )
         if existing_group:
             return
 
         rotation_group = await service.create_rotation_group(
             RotationGroupCreate(
-                name="Analgesia Rotativa Pos-Op",
+                name='Analgesia Rotativa Pos-Op',
                 spacing_hours=2,
             )
         )
 
         medications = [
             MedicationCreate(
-                name="Toragesic",
+                name='Toragesic',
                 category=MedicationCategory.ANALGESIC,
                 min_interval_hours=6,
                 is_as_needed=False,
-                notes="Sublingual (dissolver sob a lingua)",
+                notes='Sublingual (dissolver sob a lingua)',
                 rotation_group_id=rotation_group.id,
             ),
             MedicationCreate(
-                name="Paco",
+                name='Paco',
                 category=MedicationCategory.ANALGESIC,
                 min_interval_hours=6,
                 is_as_needed=False,
-                notes="Paracetamol + Fosfato de Codeina",
+                notes='Paracetamol + Fosfato de Codeina',
                 rotation_group_id=rotation_group.id,
             ),
             MedicationCreate(
-                name="Dipirona",
+                name='Dipirona',
                 category=MedicationCategory.ANALGESIC,
                 min_interval_hours=6,
                 is_as_needed=False,
-                notes="1g com agua",
+                notes='1g com agua',
                 rotation_group_id=rotation_group.id,
             ),
             MedicationCreate(
-                name="Cefadroxila",
+                name='Cefadroxila',
                 category=MedicationCategory.ANTIBIOTIC,
                 min_interval_hours=12,
                 is_as_needed=False,
-                notes="Antibiotico a cada 12 horas",
+                notes='Antibiotico a cada 12 horas',
             ),
             MedicationCreate(
-                name="Ciclobenzaprina",
+                name='Ciclobenzaprina',
                 category=MedicationCategory.MUSCLE_RELAXANT,
                 min_interval_hours=8,
                 is_as_needed=False,
-                notes="Relaxante muscular",
+                notes='Relaxante muscular',
             ),
             MedicationCreate(
-                name="Omeprazol",
+                name='Omeprazol',
                 category=MedicationCategory.GASTRIC_PROTECTION,
                 min_interval_hours=24,
                 is_as_needed=False,
-                notes="Tomar pela manha em jejum",
+                notes='Tomar pela manha em jejum',
             ),
             MedicationCreate(
-                name="Vonau",
+                name='Vonau',
                 category=MedicationCategory.ANTIEMETIC,
                 min_interval_hours=8,
                 is_as_needed=True,
-                notes="Medicamento de resgate para nauseas e vomitos",
+                notes='Medicamento de resgate para nauseas e vomitos',
             ),
         ]
 
@@ -87,5 +87,5 @@ async def populate_initial_medications() -> None:
             await service.create_medication(med)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     asyncio.run(populate_initial_medications())

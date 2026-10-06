@@ -24,17 +24,21 @@ class MedicationService:
         return await self.medication_repository.list_all_with_rotation_group()
 
     async def get_medication_by_id(self, medication_id: UUID) -> Medication:
-        medication = await self.medication_repository.get_by_id_with_rotation_group(
-            medication_id
+        medication = (
+            await self.medication_repository.get_by_id_with_rotation_group(
+                medication_id
+            )
         )
         if not medication:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Medication not found",
+                detail='Medication not found',
             )
         return medication
 
-    async def create_medication(self, medication_data: MedicationCreate) -> Medication:
+    async def create_medication(
+        self, medication_data: MedicationCreate
+    ) -> Medication:
         if medication_data.rotation_group_id:
             group = await self.rotation_group_repository.get_by_id(
                 medication_data.rotation_group_id
@@ -42,7 +46,7 @@ class MedicationService:
             if not group:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Rotation group not found",
+                    detail='Rotation group not found',
                 )
 
         medication = Medication(**medication_data.model_dump())

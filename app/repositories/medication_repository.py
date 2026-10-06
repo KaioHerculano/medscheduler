@@ -13,7 +13,9 @@ class MedicationRepository(BaseRepository[Medication]):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(Medication, session)
 
-    async def get_by_id_with_rotation_group(self, id: UUID) -> Optional[Medication]:
+    async def get_by_id_with_rotation_group(
+        self, id: UUID
+    ) -> Optional[Medication]:
         query = (
             select(Medication)
             .where(Medication.id == id)
@@ -23,7 +25,9 @@ class MedicationRepository(BaseRepository[Medication]):
         return result.scalar_one_or_none()
 
     async def list_all_with_rotation_group(self) -> Sequence[Medication]:
-        query = select(Medication).options(selectinload(Medication.rotation_group))
+        query = select(Medication).options(
+            selectinload(Medication.rotation_group)
+        )
         result = await self.session.execute(query)
         return result.scalars().all()
 

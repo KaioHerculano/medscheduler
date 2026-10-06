@@ -21,11 +21,13 @@ class DoseService:
         self.medication_repository = medication_repository
 
     async def schedule_dose(self, dose_data: DoseCreate) -> Dose:
-        medication = await self.medication_repository.get_by_id(dose_data.medication_id)
+        medication = await self.medication_repository.get_by_id(
+            dose_data.medication_id
+        )
         if not medication:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Medication not found",
+                detail='Medication not found',
             )
 
         dose = Dose(
@@ -49,28 +51,34 @@ class DoseService:
 
         return timeline
 
-    async def mark_dose_as_taken(self, dose_id: UUID, taken_at: datetime) -> Dose:
+    async def mark_dose_as_taken(
+        self, dose_id: UUID, taken_at: datetime
+    ) -> Dose:
         dose = await self.dose_repository.get_by_id_with_medication(dose_id)
         if not dose:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Dose not found",
+                detail='Dose not found',
             )
 
         dose.status = DoseStatus.TAKEN
         dose.taken_at = taken_at
         return await self.dose_repository.update(dose)
 
-    async def snooze_dose(self, dose_id: UUID, delay_minutes: int = 15) -> Dose:
+    async def snooze_dose(
+        self, dose_id: UUID, delay_minutes: int = 15
+    ) -> Dose:
         dose = await self.dose_repository.get_by_id_with_medication(dose_id)
         if not dose:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Dose not found",
+                detail='Dose not found',
             )
 
         dose.status = DoseStatus.SNOOZED
-        dose.scheduled_at = datetime.utcnow() + timedelta(minutes=delay_minutes)
+        dose.scheduled_at = datetime.utcnow() + timedelta(
+            minutes=delay_minutes
+        )
         return await self.dose_repository.update(dose)
 
     async def skip_dose(self, dose_id: UUID) -> Dose:
@@ -78,7 +86,7 @@ class DoseService:
         if not dose:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Dose not found",
+                detail='Dose not found',
             )
 
         dose.status = DoseStatus.SKIPPED
