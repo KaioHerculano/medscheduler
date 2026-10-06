@@ -1,4 +1,3 @@
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -24,14 +23,10 @@ wheels/
 venv/
 ENV/
 .venv/
-
-# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-
-# Database & OS
 *.sqlite3
 *.db
 .DS_Store
