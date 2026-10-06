@@ -1,7 +1,9 @@
 from collections.abc import Sequence
 from typing import List
 from uuid import UUID
+
 from fastapi import APIRouter, Depends, status
+
 from app.routers.dependencies import get_medication_service
 from app.schemas.medication import MedicationCreate, MedicationRead
 from app.schemas.rotation_group import (

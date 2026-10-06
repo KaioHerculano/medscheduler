@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from app.core.config import settings
 from app.routers import doses, health, medications
 

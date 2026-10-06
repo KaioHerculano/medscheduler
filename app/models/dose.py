@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class Dose(Base):
-    __tablename__ = "doses"
+    __tablename__ = 'doses'
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -25,7 +25,7 @@ class Dose(Base):
     )
     medication_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("medications.id", ondelete="CASCADE"),
+        ForeignKey('medications.id', ondelete='CASCADE'),
         nullable=False,
     )
     scheduled_at: Mapped[datetime] = mapped_column(
@@ -51,8 +51,8 @@ class Dose(Base):
         nullable=False,
     )
 
-    medication: Mapped["Medication"] = relationship(
-        "Medication",
-        back_populates="doses",
-        lazy="selectin",
+    medication: Mapped['Medication'] = relationship(
+        'Medication',
+        back_populates='doses',
+        lazy='selectin',
     )
