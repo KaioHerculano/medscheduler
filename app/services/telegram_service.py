@@ -1,5 +1,7 @@
 from typing import Any, Optional
+
 import httpx
+
 from app.core.config import settings
 
 
