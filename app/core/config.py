@@ -1,4 +1,5 @@
 from typing import Optional
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -7,7 +8,9 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/medscheduler"
+    DATABASE_URL: str = (
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/medscheduler"
+    )
     REDIS_URL: str = "redis://localhost:6379/0"
 
     TELEGRAM_BOT_TOKEN: Optional[str] = None

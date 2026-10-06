@@ -1,4 +1,5 @@
 import asyncio
+
 from app.core.database import async_session_factory
 from app.models.enums import MedicationCategory
 from app.repositories.medication_repository import MedicationRepository
@@ -14,7 +15,9 @@ async def populate_initial_medications() -> None:
         rotation_group_repo = RotationGroupRepository(session)
         service = MedicationService(medication_repo, rotation_group_repo)
 
-        existing_group = await rotation_group_repo.get_by_name("Analgesia Rotativa Pos-Op")
+        existing_group = await rotation_group_repo.get_by_name(
+            "Analgesia Rotativa Pos-Op"
+        )
         if existing_group:
             return
 

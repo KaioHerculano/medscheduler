@@ -1,6 +1,8 @@
 from typing import List, Sequence
 from uuid import UUID
+
 from fastapi import APIRouter, Depends, status
+
 from app.api.v1.dependencies import get_medication_service
 from app.schemas.medication import MedicationCreate, MedicationRead
 from app.schemas.rotation_group import RotationGroupCreate, RotationGroupRead
@@ -39,7 +41,11 @@ async def list_rotation_groups(
     return await service.list_rotation_groups()
 
 
-@router.post("/groups/rotation", response_model=RotationGroupRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/groups/rotation",
+    response_model=RotationGroupRead,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_rotation_group(
     payload: RotationGroupCreate,
     service: MedicationService = Depends(get_medication_service),

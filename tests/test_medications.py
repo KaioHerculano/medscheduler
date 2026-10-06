@@ -8,7 +8,9 @@ async def test_create_and_list_rotation_group(async_client: AsyncClient) -> None
         "name": "Analgesia Rotativa Teste",
         "spacing_hours": 2,
     }
-    create_response = await async_client.post("/api/v1/medications/groups/rotation", json=payload)
+    create_response = await async_client.post(
+        "/api/v1/medications/groups/rotation", json=payload
+    )
     assert create_response.status_code == 201
     group_data = create_response.json()
     assert group_data["name"] == payload["name"]
@@ -39,7 +41,9 @@ async def test_create_and_list_medications(async_client: AsyncClient) -> None:
         "rotation_group_id": group_id,
     }
 
-    create_med_response = await async_client.post("/api/v1/medications/", json=med_payload)
+    create_med_response = await async_client.post(
+        "/api/v1/medications/", json=med_payload
+    )
     assert create_med_response.status_code == 201
     med_data = create_med_response.json()
     assert med_data["name"] == "Toragesic Teste"

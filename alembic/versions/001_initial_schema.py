@@ -1,7 +1,9 @@
 from typing import Sequence, Union
-from alembic import op
+
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+
+from alembic import op
 
 revision: str = "001_initial_schema"
 down_revision: Union[str, None] = None
@@ -33,8 +35,15 @@ def upgrade() -> None:
             ),
             nullable=False,
         ),
-        sa.Column("min_interval_hours", sa.Integer(), nullable=False, server_default="6"),
-        sa.Column("is_as_needed", sa.Boolean(), nullable=False, server_default=sa.text("false")),
+        sa.Column(
+            "min_interval_hours", sa.Integer(), nullable=False, server_default="6"
+        ),
+        sa.Column(
+            "is_as_needed",
+            sa.Boolean(),
+            nullable=False,
+            server_default=sa.text("false"),
+        ),
         sa.Column("notes", sa.Text(), nullable=True),
         sa.Column(
             "rotation_group_id",

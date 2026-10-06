@@ -1,10 +1,13 @@
 import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
-from sqlalchemy import DateTime, ForeignKey, Integer, Enum as SQLEnum
+
+from sqlalchemy import DateTime, ForeignKey, Integer
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
+
 from app.core.database import Base
 from app.models.enums import DoseStatus
 
@@ -51,4 +54,5 @@ class Dose(Base):
     medication: Mapped["Medication"] = relationship(
         "Medication",
         back_populates="doses",
+        lazy="selectin",
     )

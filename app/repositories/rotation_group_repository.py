@@ -1,6 +1,8 @@
 from typing import Optional
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.rotation_group import RotationGroup
 from app.repositories.base_repository import BaseRepository
 

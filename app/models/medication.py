@@ -1,14 +1,17 @@
 import uuid
 from typing import TYPE_CHECKING, List, Optional
-from sqlalchemy import Boolean, ForeignKey, Integer, String, Text, Enum as SQLEnum
+
+from sqlalchemy import Boolean, ForeignKey, Integer, String, Text
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.core.database import Base
 from app.models.enums import MedicationCategory
 
 if TYPE_CHECKING:
-    from app.models.rotation_group import RotationGroup
     from app.models.dose import Dose
+    from app.models.rotation_group import RotationGroup
 
 
 class Medication(Base):
@@ -50,6 +53,7 @@ class Medication(Base):
     rotation_group: Mapped[Optional["RotationGroup"]] = relationship(
         "RotationGroup",
         back_populates="medications",
+        lazy="selectin",
     )
     doses: Mapped[List["Dose"]] = relationship(
         "Dose",

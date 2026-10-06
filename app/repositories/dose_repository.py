@@ -1,9 +1,11 @@
+from datetime import datetime
 from typing import Optional, Sequence
 from uuid import UUID
-from datetime import datetime
+
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
 from app.models.dose import Dose
 from app.models.enums import DoseStatus
 from app.repositories.base_repository import BaseRepository
@@ -14,11 +16,7 @@ class DoseRepository(BaseRepository[Dose]):
         super().__init__(Dose, session)
 
     async def get_by_id_with_medication(self, id: UUID) -> Optional[Dose]:
-        query = (
-            select(Dose)
-            .where(Dose.id == id)
-            .options(selectinload(Dose.medication))
-        )
+        query = select(Dose).where(Dose.id == id).options(selectinload(Dose.medication))
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 

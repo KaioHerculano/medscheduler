@@ -1,8 +1,10 @@
 from typing import Optional, Sequence
 from uuid import UUID
+
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
+
 from app.models.medication import Medication
 from app.repositories.base_repository import BaseRepository
 
