@@ -1,10 +1,11 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.core.database import get_database_session
 from app.repositories.dose_repository import DoseRepository
 from app.repositories.medication_repository import MedicationRepository
-from app.repositories.rotation_group_repository import RotationGroupRepository
+from app.repositories.rotation_group_repository import (
+    RotationGroupRepository,
+)
 from app.services.dose_service import DoseService
 from app.services.medication_service import MedicationService
 
