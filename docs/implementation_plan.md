@@ -74,10 +74,10 @@ Se houver atraso na confirmacao de uma dose alem de 30 minutos:
 - [x] Testes unitarios e de integracao para o servico e webhook do Telegram.
 
 ### Fase 3: Motor de Rotação e Agendamento Automatico
-- [ ] Implementacao do motor de rotacao analgesica (SchedulerEngine).
-- [ ] Integracao do APScheduler ao ciclo de vida do FastAPI.
-- [ ] Job a cada minuto conferindo doses com scheduled_at <= now() e status == PENDING.
-- [ ] Testes unitarios para regras de recalculamento de doses atrasadas e agendamentos.
+- [x] Implementacao do motor de rotacao analgesica (SchedulerEngine).
+- [x] Integracao do APScheduler ao ciclo de vida do FastAPI.
+- [x] Job a cada minuto conferindo doses com scheduled_at <= now() e status == PENDING.
+- [x] Testes unitarios para regras de recalculamento de doses atrasadas e agendamentos.
 
 ### Fase 4: Refinamento de UX, Resiliencia e Documentacao
 - [ ] Logica de insistencia (Nagging): novo aviso caso passe tempo limite sem confirmacao.
