@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 
 from app.models.dose import Dose
 from app.models.enums import DoseStatus
+from app.models.medication import Medication
 from app.repositories.base_repository import BaseRepository
 
 
@@ -42,6 +43,54 @@ class DoseRepository(BaseRepository[Dose]):
                 Dose.scheduled_at <= cutoff_time,
                 Dose.status == DoseStatus.PENDING,
             )
+            .options(selectinload(Dose.medication))
+        )
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
+    async def list_pending_ready_for_dispatch(
+        self, cutoff_time: datetime
+    ) -> Sequence[Dose]:
+        query = (
+            select(Dose)
+            .where(
+                Dose.scheduled_at <= cutoff_time,
+                Dose.status == DoseStatus.PENDING,
+                Dose.telegram_message_id.is_(None),
+            )
+            .options(selectinload(Dose.medication))
+        )
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
+    async def get_next_pending_dose_by_medication(
+        self, medication_id: UUID, after_time: datetime
+    ) -> Optional[Dose]:
+        query = (
+            select(Dose)
+            .where(
+                Dose.medication_id == medication_id,
+                Dose.scheduled_at >= after_time,
+                Dose.status == DoseStatus.PENDING,
+            )
+            .order_by(Dose.scheduled_at.asc())
+            .options(selectinload(Dose.medication))
+        )
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
+
+    async def list_subsequent_pending_doses_in_group(
+        self, rotation_group_id: UUID, after_time: datetime
+    ) -> Sequence[Dose]:
+        query = (
+            select(Dose)
+            .join(Medication, Dose.medication_id == Medication.id)
+            .where(
+                Medication.rotation_group_id == rotation_group_id,
+                Dose.scheduled_at >= after_time,
+                Dose.status == DoseStatus.PENDING,
+            )
+            .order_by(Dose.scheduled_at.asc())
             .options(selectinload(Dose.medication))
         )
         result = await self.session.execute(query)
