@@ -93,7 +93,8 @@ class DoseService:
                     taken_at, medication.min_interval_hours
                 )
             )
-            if recalculated_time > next_dose.scheduled_at:
+            next_sched = SchedulerEngine._to_utc(next_dose.scheduled_at)
+            if recalculated_time > next_sched:
                 next_dose.scheduled_at = recalculated_time
                 await self.dose_repository.update(next_dose)
 
@@ -117,7 +118,10 @@ class DoseService:
                         spacing_hours,
                     )
                 )
-                if adjusted_time != group_dose.scheduled_at:
+                current_sched = SchedulerEngine._to_utc(
+                    group_dose.scheduled_at
+                )
+                if adjusted_time != current_sched:
                     group_dose.scheduled_at = adjusted_time
                     await self.dose_repository.update(group_dose)
                 current_reference = group_dose.scheduled_at
