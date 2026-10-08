@@ -45,6 +45,15 @@ class Dose(Base):
         Integer,
         nullable=True,
     )
+    last_notified_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    reminder_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
