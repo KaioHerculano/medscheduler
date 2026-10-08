@@ -78,6 +78,64 @@ class TelegramService:
         data = await self._send_request('sendMessage', payload)
         return data.get('result', {}).get('message_id')
 
+    async def send_nagging_reminder(
+        self,
+        chat_id: str,
+        dose_id: str,
+        medication_name: str,
+        overdue_minutes: int,
+    ) -> Optional[int]:
+        text = (
+            f'<b>AVISO DE ATRASO: Dose nao confirmada</b>\n'
+            f'Medicamento: <b>{medication_name}</b>\n'
+            f'Tempo decorrido: {overdue_minutes} minutos'
+        )
+
+        keyboard = {
+            'inline_keyboard': [
+                [
+                    {
+                        'text': 'Tomei Agora',
+                        'callback_data': f'dose:{dose_id}:taken',
+                    },
+                    {
+                        'text': 'Adiar 15 min',
+                        'callback_data': f'dose:{dose_id}:snooze_15',
+                    },
+                ],
+                [
+                    {
+                        'text': 'Pular Dose',
+                        'callback_data': f'dose:{dose_id}:skip',
+                    }
+                ],
+            ]
+        }
+
+        payload = {
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': 'HTML',
+            'reply_markup': keyboard,
+        }
+
+        data = await self._send_request('sendMessage', payload)
+        return data.get('result', {}).get('message_id')
+
+    async def send_message(
+        self,
+        chat_id: str,
+        text: str,
+        parse_mode: str = 'HTML',
+    ) -> Optional[int]:
+        payload = {
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': parse_mode,
+        }
+        data = await self._send_request('sendMessage', payload)
+        return data.get('result', {}).get('message_id')
+
     async def answer_callback_query(
         self, callback_query_id: str, text: str = 'Confirmado'
     ) -> bool:

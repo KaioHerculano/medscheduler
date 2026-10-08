@@ -18,10 +18,89 @@ class TelegramWebhookService:
     async def process_update(
         self, update_data: dict[str, Any]
     ) -> dict[str, str]:
-        if 'callback_query' not in update_data:
-            return {'status': 'ignored'}
+        if 'message' in update_data:
+            return await self._process_message(update_data['message'])
 
-        callback_query = update_data['callback_query']
+        if 'callback_query' in update_data:
+            return await self._process_callback_query(
+                update_data['callback_query']
+            )
+
+        return {'status': 'ignored'}
+
+    async def _process_message(
+        self, message: dict[str, Any]
+    ) -> dict[str, str]:
+        text = message.get('text', '').strip()
+        chat_id = str(message.get('chat', {}).get('id'))
+
+        if text.startswith('/status'):
+            await self._send_status_summary(chat_id)
+            return {'status': 'status_sent'}
+
+        return {'status': 'ignored'}
+
+    async def _send_status_summary(self, chat_id: str) -> None:
+        timeline = await self.dose_service.get_timeline_grouped_by_status()
+        pending = timeline.get('PENDING', [])
+        taken = timeline.get('TAKEN', [])
+        snoozed = timeline.get('SNOOZED', [])
+        skipped = timeline.get('SKIPPED', [])
+
+        lines = ['<b>Cronograma de Medicamentos</b>\n']
+
+        if taken:
+            lines.append('<b>Doses Tomadas:</b>')
+            for dose in taken:
+                med_name = (
+                    dose.medication.name if dose.medication else 'Medicamento'
+                )
+                time_str = (
+                    dose.taken_at.strftime('%H:%M')
+                    if dose.taken_at
+                    else '--:--'
+                )
+                lines.append(f'- {med_name} as {time_str}')
+            lines.append('')
+
+        if pending:
+            lines.append('<b>Proximas Doses Agendadas:</b>')
+            for dose in pending:
+                med_name = (
+                    dose.medication.name if dose.medication else 'Medicamento'
+                )
+                time_str = dose.scheduled_at.strftime('%H:%M')
+                lines.append(f'- {med_name} as {time_str}')
+            lines.append('')
+
+        if snoozed:
+            lines.append('<b>Doses Adiada(s):</b>')
+            for dose in snoozed:
+                med_name = (
+                    dose.medication.name if dose.medication else 'Medicamento'
+                )
+                time_str = dose.scheduled_at.strftime('%H:%M')
+                lines.append(f'- {med_name} reagendado para {time_str}')
+            lines.append('')
+
+        if skipped:
+            lines.append('<b>Doses Puladas:</b>')
+            for dose in skipped:
+                med_name = (
+                    dose.medication.name if dose.medication else 'Medicamento'
+                )
+                lines.append(f'- {med_name}')
+            lines.append('')
+
+        if not (pending or taken or snoozed or skipped):
+            lines.append('Nenhuma dose encontrada no cronograma.')
+
+        message_text = '\n'.join(lines).strip()
+        await self.telegram_service.send_message(chat_id, message_text)
+
+    async def _process_callback_query(
+        self, callback_query: dict[str, Any]
+    ) -> dict[str, str]:
         callback_id = callback_query['id']
         callback_data = callback_query.get('data', '')
         message = callback_query.get('message', {})
@@ -101,4 +180,4 @@ class TelegramWebhookService:
         await self.telegram_service.answer_callback_query(
             callback_id, 'Acao invalida'
         )
-        return {'status': 'unsupported_action'}
+        return {'status': 'invalid_action'}
