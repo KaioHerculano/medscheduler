@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from app.core.config import settings
 from app.core.database import Base, get_database_session
 from app.main import app
 
@@ -26,6 +27,12 @@ test_session_factory = async_sessionmaker(
 @pytest.fixture(scope='session')
 def anyio_backend() -> str:
     return 'asyncio'
+
+
+@pytest.fixture(autouse=True)
+def configure_test_settings(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(settings, 'ENVIRONMENT', 'test')
+    monkeypatch.setattr(settings, 'TELEGRAM_WEBHOOK_SECRET', None)
 
 
 @pytest.fixture(autouse=True)
