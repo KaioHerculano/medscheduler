@@ -80,6 +80,6 @@ Se houver atraso na confirmacao de uma dose alem de 30 minutos:
 - [x] Testes unitarios para regras de recalculamento de doses atrasadas e agendamentos.
 
 ### Fase 4: Refinamento de UX, Resiliencia e Documentacao
-- [ ] Logica de insistencia (Nagging): novo aviso caso passe tempo limite sem confirmacao.
-- [ ] Comando /status no Telegram para consultar a linha do tempo do dia.
-- [ ] Documentacao completa com MkDocs (padrao Material) inspirada no car_api.
+- [x] Logica de insistencia (Nagging): novo aviso caso passe tempo limite sem confirmacao.
+- [x] Comando /status no Telegram para consultar a linha do tempo do dia.
+- [x] Documentacao completa com MkDocs (padrao Material) inspirada no car_api.

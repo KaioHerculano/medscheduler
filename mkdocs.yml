@@ -1,0 +1,43 @@
+site_name: MedScheduler
+site_description: Backend para gerenciamento de rotina pos-operatoria de medicamentos e analgesia escalonada rotativa.
+site_author: Kaio Herculano
+
+theme:
+  name: material
+  palette:
+    primary: teal
+    accent: indigo
+  font:
+    text: Roboto
+  features:
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+
+nav:
+  - Inicio: index.md
+  - Visao Geral: overview.md
+  - Arquitetura: architecture.md
+  - Algoritmo de Rotacao: rotation-algorithm.md
+  - Endpoints da API: api-endpoints.md
+  - Integracao Telegram: telegram-integration.md
+  - Agendador e Nagging: scheduler-workers.md
+  - Instalacao: installation.md
+  - Configuracao: configuration.md
+  - Testes e Qualidade: tests.md
+  - Plano de Implementacao: implementation_plan.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid

@@ -16,6 +16,8 @@ from app.services.telegram_service import TelegramService
 def mock_telegram_service() -> TelegramService:
     service = TelegramService(bot_token='mock_token')
     service.send_dose_reminder = AsyncMock(return_value=123)
+    service.send_nagging_reminder = AsyncMock(return_value=789)
+    service.send_message = AsyncMock(return_value=456)
     service.answer_callback_query = AsyncMock(return_value=True)
     service.edit_message_text = AsyncMock(return_value=True)
     return service
@@ -220,3 +222,86 @@ async def test_webhook_security_token_rejected(
         assert response.status_code == 403
     finally:
         settings.TELEGRAM_WEBHOOK_SECRET = original_secret
+
+
+@pytest.mark.asyncio
+async def test_telegram_send_message_success() -> None:
+    mock_client = AsyncMock()
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {'result': {'message_id': 111}}
+    mock_client.post.return_value = mock_response
+
+    service = TelegramService(bot_token='test_token', http_client=mock_client)
+    message_id = await service.send_message(
+        chat_id='12345',
+        text='Mensagem de teste',
+    )
+    assert message_id == 111
+    assert mock_client.post.called
+
+
+@pytest.mark.asyncio
+async def test_telegram_send_nagging_reminder_success() -> None:
+    mock_client = AsyncMock()
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {'result': {'message_id': 222}}
+    mock_client.post.return_value = mock_response
+
+    service = TelegramService(bot_token='test_token', http_client=mock_client)
+    message_id = await service.send_nagging_reminder(
+        chat_id='12345',
+        dose_id=str(uuid.uuid4()),
+        medication_name='Dipirona',
+        overdue_minutes=15,
+    )
+    assert message_id == 222
+    assert mock_client.post.called
+
+
+@pytest.mark.asyncio
+async def test_webhook_status_command(
+    async_client: AsyncClient,
+    mock_telegram_service: TelegramService,
+) -> None:
+    app.dependency_overrides[get_telegram_service] = lambda: (
+        mock_telegram_service
+    )
+
+    med_response = await async_client.post(
+        '/medications/',
+        json={
+            'name': 'Dipirona',
+            'category': 'ANALGESIC',
+            'min_interval_hours': 6,
+        },
+    )
+    med_id = med_response.json()['id']
+
+    await async_client.post(
+        '/doses/',
+        json={
+            'medication_id': med_id,
+            'scheduled_at': datetime.now(timezone.utc).isoformat(),
+        },
+    )
+
+    webhook_payload = {
+        'message': {
+            'text': '/status',
+            'chat': {'id': 9876},
+        }
+    }
+
+    response = await async_client.post(
+        '/webhooks/telegram', json=webhook_payload
+    )
+    assert response.status_code == 200
+    assert response.json()['status'] == 'status_sent'
+    mock_telegram_service.send_message.assert_called_once()
+    args, _ = mock_telegram_service.send_message.call_args
+    assert args[0] == '9876'
+    assert 'Dipirona' in args[1]
+
+    app.dependency_overrides.pop(get_telegram_service, None)

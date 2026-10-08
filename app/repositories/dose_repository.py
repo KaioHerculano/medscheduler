@@ -63,6 +63,24 @@ class DoseRepository(BaseRepository[Dose]):
         result = await self.session.execute(query)
         return result.scalars().all()
 
+    async def list_pending_doses_for_nagging(
+        self, cutoff_time: datetime, max_reminders: int = 3
+    ) -> Sequence[Dose]:
+        query = (
+            select(Dose)
+            .where(
+                Dose.status == DoseStatus.PENDING,
+                Dose.telegram_message_id.is_not(None),
+                Dose.last_notified_at.is_not(None),
+                Dose.last_notified_at <= cutoff_time,
+                Dose.reminder_count < max_reminders,
+            )
+            .order_by(Dose.scheduled_at.asc())
+            .options(selectinload(Dose.medication))
+        )
+        result = await self.session.execute(query)
+        return result.scalars().all()
+
     async def get_next_pending_dose_by_medication(
         self, medication_id: UUID, after_time: datetime
     ) -> Optional[Dose]:
